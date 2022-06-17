@@ -1,0 +1,41 @@
+{
+  "name": "@learningalbum/env-validation",
+  "version": "1.0.5",
+  "description": "Validate environment config",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "docs:build": "rm -rf docs && npx typedoc --excludePrivate --excludeProtected --excludeInternal src/index.ts",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run co:login && npm run build",
+    "co:login": "aws codeartifact login --tool npm --repository nodejs --domain learningalbum",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://git.vzlt.cloud/learningalbum/lib-env-validation.git"
+  },
+  "author": "Gabe Blair",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "jest": "^28.1.1",
+    "prettier": "^2.7.1",
+    "ts-jest": "^28.0.5",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.7.3"
+  },
+  "dependencies": {
+    "typedoc": "^0.22.17"
+  }
+}
