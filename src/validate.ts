@@ -12,8 +12,7 @@ export const validate = (varsConfig: ValidationConfig = []) => {
   const errors: string[] = [];
 
   // First preprocess all the env vars
-  varsConfig.forEach((fieldConf) => {
-    const {name, preProcess} = fieldConf;
+  varsConfig.forEach(({name, preProcess}) => {
     const raw = process.env[name];
 
     config[name] = typeof preProcess === 'function'
@@ -35,14 +34,21 @@ export const validate = (varsConfig: ValidationConfig = []) => {
 
   // Run validations
   varsConfig.forEach((fieldConf) => {
-    const {required, validations, name} = fieldConf;
-    const val = config[name];
+    const {required, validations, name: fieldName} = fieldConf;
+    const val = config[fieldName];
 
     // Check if required
-    if (required && !val) {
-      errors.push(`${name} is required`);
+    if (required && (typeof val !== 'boolean' && !val)) {
+      errors.push(`${fieldName} is required`);
       return;
     }
+
+    // Now postprocess all the env vars
+    varsConfig.forEach(({name, postProcess}) => {
+      if (typeof postProcess !== 'function') return;
+
+      config[name] = postProcess(config[name], config);
+    });
 
     // We're done unless there are any validation rules
     if (!validations) return;
@@ -51,7 +57,7 @@ export const validate = (varsConfig: ValidationConfig = []) => {
     validations.forEach((validation) => {
       if (validation.validate(val, config)) return;
 
-      errors.push(`${name} ${validation.msg}`);
+      errors.push(`${fieldName} ${validation.msg}`);
     });
   })
 

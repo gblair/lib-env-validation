@@ -4,6 +4,7 @@ interface EnvContext {
 
 type FieldValidator = (val: any, context?: EnvContext) => boolean;
 type FieldPreprocessor = (val: any) => any;
+type FieldPostprocessor = (val: any, context?: EnvContext) => any;
 
 interface FieldValidation {
   validate: FieldValidator;
@@ -15,6 +16,7 @@ interface FieldConf {
   default?: any;
   required?: boolean;
   preProcess?: FieldPreprocessor,
+  postProcess?: FieldPostprocessor,
   validations?: FieldValidation[],
 }
 
