@@ -37,7 +37,7 @@ error message describing why.
 
 ### Variable configs
 
-Declare each variable you want to validate. For full details on the interface, please see [the docs](https://pages.git.vzlt.cloud/learningalbum/lib-env-validation/) or `src/types.ts`. 
+Declare each variable you want to validate. For full details on the interface, please see `src/types.ts`. 
 
 |key|type|required?|description|
 |-|-|-|-|
