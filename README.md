@@ -39,9 +39,11 @@ error message describing why.
 
 Declare each variable you want to validate. For full details on the interface, please see `src/types.ts`. 
 
-|key|type|required?|description|
-|-|-|-|-|
-|name|string|yes|the name of the variable to pick up from `process.env`|
-|default|any|no|a default value to use|
-|preProcess|`(val: any) => any`|no|function to transform the value before any validation|
-|validations|array of `(val: any, context?: EnvContext) => boolean`|no|function to validate the value|
+| key         | type                                                   |required?| description                                                                                              |
+|-------------|--------------------------------------------------------|-|----------------------------------------------------------------------------------------------------------|
+| name        | string                                                 |yes| the name of the variable to pick up from `process.env`                                                   |
+| default     | any                                                    |no| a default value to use                                                                                   |
+| preProcess  | `(val: any) => any`                                    |no| function to transform the value before any validation                                                    |
+| validations | array of `(val: any, context?: EnvContext) => boolean` |no| function to validate the value                                                                           |
+| deprecated  | boolean                                                |no| whether this var is marked as deprecated                                                                 |
+| message     | string                                                 |no| the deprecation message to show if the deprecated var is present (only relevant when `deprecated: true`) |

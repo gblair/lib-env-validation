@@ -15,9 +15,11 @@ interface FieldConf {
   name: string;
   default?: any;
   required?: boolean;
-  preProcess?: FieldPreprocessor,
-  postProcess?: FieldPostprocessor,
-  validations?: FieldValidation[],
+  deprecated?: boolean;
+  message?: string,
+  preProcess?: FieldPreprocessor;
+  postProcess?: FieldPostprocessor;
+  validations?: FieldValidation[];
 }
 
 interface ValidationConfig extends Array<FieldConf> {}

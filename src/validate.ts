@@ -11,6 +11,9 @@ export const validate = (varsConfig: ValidationConfig = []) => {
   // Any errors we encounter along the way
   const errors: string[] = [];
 
+  // Any warnings we encounter along the way
+  const warnings: string[] = [];
+
   // First preprocess all the env vars
   varsConfig.forEach(({name, preProcess}) => {
     const raw = process.env[name];
@@ -34,8 +37,12 @@ export const validate = (varsConfig: ValidationConfig = []) => {
 
   // Run validations
   varsConfig.forEach((fieldConf) => {
-    const {required, validations, name: fieldName} = fieldConf;
+    const {required, deprecated, message, validations, name: fieldName} = fieldConf;
     const val = config[fieldName];
+
+    if (deprecated && process.env[fieldName]) {
+      warnings.push(`${fieldName} is deprecated. ${message}`)
+    }
 
     // Check if required
     if (required && (typeof val !== 'boolean' && !val)) {
@@ -60,6 +67,11 @@ export const validate = (varsConfig: ValidationConfig = []) => {
       errors.push(`${fieldName} ${validation.msg}`);
     });
   })
+
+  if (warnings.length > 0) {
+    // tslint:disable-next-line
+    console.error("\n" + 'WARNING: Deprecated environment variables detected:' + "\n\n  " + warnings.join("\n  ") + "\n");
+  }
 
   if (errors.length > 0) {
     // tslint:disable-next-line
