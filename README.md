@@ -31,9 +31,15 @@ Then in your application code, wherever you need config from your env, you do st
 const { MY_VAR } = require('config.js');
 // Do something with MY_VAR
 ```
+or, if using ESM:
 
-If MY_VAR doesn't validate in the way you've configured in config.js, the app won't even start and there will be an 
-error message describing why.
+```js
+import envs from './config.js';
+const { MY_VAR } = envs;
+```
+
+If `MY_VAR` doesn't validate in the way you've configured in config.js, an error will be thrown with an error message
+describing why.
 
 ### Variable configs
 
