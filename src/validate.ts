@@ -14,11 +14,12 @@ export const validate = (varsConfig: ValidationConfig = []) => {
   // Any warnings we encounter along the way
   const warnings: string[] = [];
 
-  // First preprocess all the env vars
+  // First preprocess all the env vars. Unset vars are left undefined so the
+  // defaults pass can tell "never set" apart from a preprocessed falsy value.
   varsConfig.forEach(({name, preProcess}) => {
     const raw = process.env[name];
 
-    config[name] = typeof preProcess === 'function'
+    config[name] = typeof preProcess === 'function' && raw !== undefined
       ? preProcess(raw)
       : raw;
   });
@@ -35,6 +36,13 @@ export const validate = (varsConfig: ValidationConfig = []) => {
     config[name] = getDefault(val, fieldConf, config);
   });
 
+  // Now postprocess all the env vars
+  varsConfig.forEach(({name, postProcess}) => {
+    if (typeof postProcess !== 'function') return;
+
+    config[name] = postProcess(config[name], config);
+  });
+
   // Run validations
   varsConfig.forEach((fieldConf) => {
     const {required, deprecated, message, validations, name: fieldName} = fieldConf;
@@ -49,13 +57,6 @@ export const validate = (varsConfig: ValidationConfig = []) => {
       errors.push(`${fieldName} is required`);
       return;
     }
-
-    // Now postprocess all the env vars
-    varsConfig.forEach(({name, postProcess}) => {
-      if (typeof postProcess !== 'function') return;
-
-      config[name] = postProcess(config[name], config);
-    });
 
     // We're done unless there are any validation rules
     if (!validations) return;
